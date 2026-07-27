@@ -1,0 +1,1871 @@
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="MonoPump uses the iPhone camera and flash for guided pulse estimates, contextual trends, local history, and private data export.">
+    <meta name="theme-color" content="#fff8f5">
+    <meta property="og:title" content="MonoPump — Pulse awareness, in context">
+    <meta property="og:description" content="A private, camera-based pulse tracker for iPhone.">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="assets/images/app-icon.png">
+    <link rel="icon" href="assets/images/app-icon.png" type="image/png">
+    <link rel="apple-touch-icon" href="assets/images/app-icon.png">
+    <title>MonoPump — Camera Pulse Tracker for iPhone</title>
+    <script>document.documentElement.classList.replace("no-js", "js");</script>
+    <style>
+        :root {
+            --paper: #fffaf8;
+            --paper-warm: #fff3ef;
+            --surface: #ffffff;
+            --surface-soft: #f8f6f5;
+            --ink: #171820;
+            --ink-soft: #292b36;
+            --muted: #696874;
+            --muted-light: #9b98a2;
+            --line: rgba(23, 24, 32, 0.1);
+            --accent: #ed4569;
+            --accent-deep: #c92d53;
+            --accent-soft: #ffdbe2;
+            --coral: #ff806e;
+            --blue: #5f74ee;
+            --navy: #111728;
+            --navy-soft: #1a2238;
+            --green: #39a778;
+            --radius-sm: 16px;
+            --radius-md: 24px;
+            --radius-lg: 38px;
+            --shadow-soft: 0 18px 60px rgba(53, 33, 38, 0.1);
+            --shadow-phone: 0 36px 80px rgba(35, 24, 31, 0.24);
+            --page: min(1180px, calc(100% - 48px));
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            overflow-x: clip;
+        }
+
+        body {
+            min-width: 320px;
+            color: var(--ink);
+            background: var(--paper);
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", sans-serif;
+            font-size: 17px;
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            text-rendering: optimizeLegibility;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            position: fixed;
+            z-index: -2;
+            inset: 0;
+            background:
+                radial-gradient(circle at 10% 2%, rgba(255, 179, 165, 0.3), transparent 31rem),
+                radial-gradient(circle at 90% 22%, rgba(105, 122, 238, 0.12), transparent 33rem),
+                var(--paper);
+            content: "";
+            pointer-events: none;
+        }
+
+        img {
+            display: block;
+            max-width: 100%;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        button,
+        a {
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        button {
+            color: inherit;
+            font: inherit;
+        }
+
+        :focus-visible {
+            outline: 3px solid rgba(95, 116, 238, 0.55);
+            outline-offset: 4px;
+        }
+
+        .skip-link {
+            position: fixed;
+            z-index: 1000;
+            top: 12px;
+            left: 12px;
+            padding: 10px 16px;
+            border-radius: 999px;
+            color: #ffffff;
+            background: var(--navy);
+            transform: translateY(-150%);
+            transition: transform 180ms ease;
+        }
+
+        .skip-link:focus {
+            transform: translateY(0);
+        }
+
+        .page {
+            width: var(--page);
+            margin-inline: auto;
+        }
+
+        .site-header {
+            position: fixed;
+            z-index: 100;
+            top: 0;
+            right: 0;
+            left: 0;
+            padding: 14px 0;
+            border-bottom: 1px solid transparent;
+            transition:
+                padding 180ms ease,
+                border-color 180ms ease,
+                background-color 180ms ease,
+                box-shadow 180ms ease;
+        }
+
+        .site-header.is-scrolled {
+            padding: 9px 0;
+            border-color: var(--line);
+            background: rgba(255, 250, 248, 0.88);
+            box-shadow: 0 8px 30px rgba(48, 32, 38, 0.05);
+            -webkit-backdrop-filter: blur(18px);
+            backdrop-filter: blur(18px);
+        }
+
+        .nav-wrap {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 28px;
+        }
+
+        .brand {
+            display: inline-flex;
+            align-items: center;
+            gap: 11px;
+            font-size: 18px;
+            font-weight: 750;
+            letter-spacing: -0.02em;
+        }
+
+        .brand img {
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            box-shadow: 0 7px 18px rgba(205, 47, 84, 0.19);
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            position: relative;
+            color: var(--muted);
+            font-size: 14px;
+            font-weight: 620;
+        }
+
+        .nav-links a::after {
+            position: absolute;
+            right: 0;
+            bottom: -6px;
+            left: 0;
+            height: 2px;
+            border-radius: 2px;
+            background: var(--accent);
+            content: "";
+            transform: scaleX(0);
+            transition: transform 180ms ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--ink);
+        }
+
+        .nav-links a:hover::after {
+            transform: scaleX(1);
+        }
+
+        .nav-support {
+            display: inline-flex;
+            align-items: center;
+            min-height: 40px;
+            padding: 0 18px;
+            border: 1px solid var(--line);
+            border-radius: 999px;
+            color: var(--ink) !important;
+            background: rgba(255, 255, 255, 0.68);
+        }
+
+        .nav-support::after {
+            display: none;
+        }
+
+        .menu-toggle {
+            display: none;
+            width: 42px;
+            height: 42px;
+            border: 1px solid var(--line);
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.76);
+            cursor: pointer;
+        }
+
+        .menu-toggle span,
+        .menu-toggle::before,
+        .menu-toggle::after {
+            display: block;
+            width: 18px;
+            height: 2px;
+            margin: 4px auto;
+            border-radius: 2px;
+            background: var(--ink);
+            content: "";
+            transition: transform 180ms ease, opacity 180ms ease;
+        }
+
+        .menu-toggle[aria-expanded="true"] span {
+            opacity: 0;
+        }
+
+        .menu-toggle[aria-expanded="true"]::before {
+            transform: translateY(6px) rotate(45deg);
+        }
+
+        .menu-toggle[aria-expanded="true"]::after {
+            transform: translateY(-6px) rotate(-45deg);
+        }
+
+        .hero {
+            position: relative;
+            overflow: clip;
+            min-height: 820px;
+            padding: 150px 0 95px;
+        }
+
+        .hero::after {
+            position: absolute;
+            z-index: -1;
+            top: 88px;
+            right: -160px;
+            width: 600px;
+            height: 600px;
+            border-radius: 50%;
+            background: linear-gradient(145deg, rgba(255, 210, 202, 0.56), rgba(239, 213, 255, 0.35));
+            filter: blur(2px);
+            content: "";
+        }
+
+        .hero-grid {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) minmax(430px, 0.88fr);
+            align-items: center;
+            gap: clamp(48px, 7vw, 104px);
+        }
+
+        .eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 9px;
+            margin-bottom: 20px;
+            color: var(--accent-deep);
+            font-size: 13px;
+            font-weight: 760;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+        }
+
+        .eyebrow::before {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--accent);
+            box-shadow: 0 0 0 7px rgba(237, 69, 105, 0.11);
+            content: "";
+        }
+
+        h1,
+        h2,
+        h3 {
+            text-wrap: balance;
+        }
+
+        h1 {
+            max-width: 720px;
+            font-size: clamp(54px, 6.2vw, 86px);
+            font-weight: 780;
+            letter-spacing: -0.066em;
+            line-height: 0.98;
+        }
+
+        .hero h1 em {
+            color: var(--accent);
+            font-style: normal;
+        }
+
+        .hero-copy {
+            max-width: 630px;
+            margin-top: 28px;
+            color: var(--muted);
+            font-size: clamp(18px, 1.7vw, 21px);
+            line-height: 1.62;
+        }
+
+        .hero-actions {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 14px;
+            margin-top: 34px;
+        }
+
+        .button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            min-height: 52px;
+            padding: 0 24px;
+            border-radius: 999px;
+            font-size: 15px;
+            font-weight: 700;
+            transition: transform 180ms ease, box-shadow 180ms ease, background-color 180ms ease;
+        }
+
+        .button:hover {
+            transform: translateY(-2px);
+        }
+
+        .button-primary {
+            color: #ffffff;
+            background: var(--ink);
+            box-shadow: 0 12px 28px rgba(23, 24, 32, 0.18);
+        }
+
+        .button-primary:hover {
+            box-shadow: 0 16px 34px rgba(23, 24, 32, 0.24);
+        }
+
+        .button-secondary {
+            border: 1px solid var(--line);
+            background: rgba(255, 255, 255, 0.68);
+        }
+
+        .button svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        .hero-facts {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px 22px;
+            margin-top: 34px;
+            color: var(--muted);
+            font-size: 13px;
+            font-weight: 620;
+        }
+
+        .hero-facts span {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+        }
+
+        .hero-facts span::before {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--green);
+            content: "";
+        }
+
+        .device-stage {
+            position: relative;
+            min-height: 635px;
+        }
+
+        .stage-glow {
+            position: absolute;
+            top: 110px;
+            left: 20px;
+            width: 390px;
+            height: 390px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(237, 69, 105, 0.22), rgba(255, 149, 128, 0.04) 65%, transparent 70%);
+            filter: blur(7px);
+        }
+
+        .phone {
+            position: absolute;
+            overflow: hidden;
+            width: 278px;
+            border: 9px solid #161820;
+            border-radius: 48px;
+            background: #161820;
+            box-shadow: var(--shadow-phone);
+            aspect-ratio: 645 / 1398;
+        }
+
+        .phone img {
+            width: 100%;
+            height: 100%;
+            border-radius: 38px;
+            object-fit: cover;
+        }
+
+        .phone-back {
+            z-index: 1;
+            top: 25px;
+            right: 0;
+            width: 240px;
+            transform: rotate(7deg);
+        }
+
+        .phone-front {
+            z-index: 2;
+            bottom: 0;
+            left: 0;
+            transform: rotate(-3deg);
+        }
+
+        .floating-note {
+            position: absolute;
+            z-index: 3;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 15px;
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            border-radius: 18px;
+            background: rgba(255, 255, 255, 0.8);
+            box-shadow: var(--shadow-soft);
+            -webkit-backdrop-filter: blur(16px);
+            backdrop-filter: blur(16px);
+            color: var(--ink-soft);
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .floating-note svg {
+            width: 20px;
+            height: 20px;
+            color: var(--accent);
+        }
+
+        .floating-note.note-top {
+            top: 125px;
+            left: -35px;
+        }
+
+        .floating-note.note-bottom {
+            right: -38px;
+            bottom: 75px;
+        }
+
+        .section {
+            padding: 112px 0;
+        }
+
+        .section-kicker {
+            margin-bottom: 13px;
+            color: var(--accent-deep);
+            font-size: 12px;
+            font-weight: 780;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+        }
+
+        .section-title {
+            max-width: 780px;
+            font-size: clamp(39px, 4.6vw, 64px);
+            font-weight: 760;
+            letter-spacing: -0.052em;
+            line-height: 1.04;
+        }
+
+        .section-lead {
+            max-width: 670px;
+            margin-top: 22px;
+            color: var(--muted);
+            font-size: 18px;
+            line-height: 1.7;
+        }
+
+        .signal-band {
+            position: relative;
+            overflow: hidden;
+            color: #ffffff;
+            background: var(--navy);
+        }
+
+        .signal-band::before {
+            position: absolute;
+            inset: 0;
+            background:
+                linear-gradient(120deg, rgba(237, 69, 105, 0.16), transparent 36%),
+                radial-gradient(circle at 92% 20%, rgba(95, 116, 238, 0.24), transparent 36rem);
+            content: "";
+        }
+
+        .signal-band .page {
+            position: relative;
+        }
+
+        .signal-grid {
+            display: grid;
+            grid-template-columns: 0.8fr 1.2fr;
+            align-items: center;
+            gap: clamp(48px, 9vw, 125px);
+        }
+
+        .signal-visual {
+            position: relative;
+            display: grid;
+            min-height: 650px;
+            place-items: center;
+        }
+
+        .signal-ring,
+        .signal-ring::before,
+        .signal-ring::after {
+            position: absolute;
+            border: 1px solid rgba(255, 255, 255, 0.11);
+            border-radius: 50%;
+            content: "";
+        }
+
+        .signal-ring {
+            width: 440px;
+            height: 440px;
+        }
+
+        .signal-ring::before {
+            inset: 38px;
+        }
+
+        .signal-ring::after {
+            inset: 86px;
+        }
+
+        .signal-visual .phone {
+            position: relative;
+            z-index: 2;
+            width: 286px;
+            box-shadow: 0 44px 95px rgba(0, 0, 0, 0.42);
+        }
+
+        .signal-copy .section-kicker {
+            color: #ff9eae;
+        }
+
+        .signal-copy .section-title {
+            max-width: 650px;
+        }
+
+        .signal-copy .section-lead {
+            color: rgba(255, 255, 255, 0.68);
+        }
+
+        .instruction-list {
+            display: grid;
+            gap: 18px;
+            margin-top: 38px;
+            list-style: none;
+        }
+
+        .instruction-list li {
+            display: grid;
+            grid-template-columns: 42px 1fr;
+            align-items: start;
+            gap: 15px;
+        }
+
+        .step-number {
+            display: grid;
+            width: 42px;
+            height: 42px;
+            border: 1px solid rgba(255, 255, 255, 0.16);
+            border-radius: 14px;
+            place-items: center;
+            color: #ff9eae;
+            background: rgba(255, 255, 255, 0.06);
+            font-size: 13px;
+            font-weight: 780;
+        }
+
+        .instruction-list strong {
+            display: block;
+            margin-bottom: 2px;
+            font-size: 16px;
+        }
+
+        .instruction-list p {
+            color: rgba(255, 255, 255, 0.59);
+            font-size: 14px;
+        }
+
+        .feature-heading {
+            display: flex;
+            align-items: end;
+            justify-content: space-between;
+            gap: 36px;
+            margin-bottom: 50px;
+        }
+
+        .feature-heading .section-lead {
+            max-width: 420px;
+            margin: 0 0 7px;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+        }
+
+        .feature-card {
+            min-height: 260px;
+            padding: 30px;
+            border: 1px solid var(--line);
+            border-radius: var(--radius-md);
+            background: rgba(255, 255, 255, 0.72);
+            transition: transform 200ms ease, box-shadow 200ms ease, border-color 200ms ease;
+        }
+
+        .feature-card:hover {
+            border-color: rgba(237, 69, 105, 0.2);
+            box-shadow: var(--shadow-soft);
+            transform: translateY(-5px);
+        }
+
+        .feature-icon {
+            display: grid;
+            width: 48px;
+            height: 48px;
+            margin-bottom: 30px;
+            border-radius: 15px;
+            place-items: center;
+            color: var(--accent-deep);
+            background: var(--accent-soft);
+        }
+
+        .feature-card:nth-child(2n) .feature-icon {
+            color: #4056c7;
+            background: #e2e7ff;
+        }
+
+        .feature-card:nth-child(3n) .feature-icon {
+            color: #287f5c;
+            background: #ddf4ea;
+        }
+
+        .feature-icon svg {
+            width: 24px;
+            height: 24px;
+        }
+
+        .feature-card h3 {
+            font-size: 19px;
+            letter-spacing: -0.025em;
+        }
+
+        .feature-card p {
+            margin-top: 10px;
+            color: var(--muted);
+            font-size: 14px;
+            line-height: 1.65;
+        }
+
+        .theme-section {
+            position: relative;
+            overflow: hidden;
+            background:
+                radial-gradient(circle at 15% 20%, rgba(184, 123, 255, 0.13), transparent 28rem),
+                radial-gradient(circle at 86% 72%, rgba(70, 196, 164, 0.12), transparent 30rem),
+                var(--surface-soft);
+        }
+
+        .theme-heading {
+            display: grid;
+            grid-template-columns: minmax(0, 1.1fr) minmax(320px, 0.9fr);
+            align-items: end;
+            gap: 48px;
+            margin-bottom: 48px;
+        }
+
+        .theme-heading .section-lead {
+            margin: 0 0 7px;
+        }
+
+        .theme-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 20px;
+        }
+
+        .theme-card {
+            position: relative;
+            overflow: hidden;
+            min-height: 610px;
+            padding: 28px 28px 0;
+            border: 1px solid rgba(23, 24, 32, 0.08);
+            border-radius: 30px;
+            box-shadow: 0 22px 55px rgba(43, 34, 55, 0.09);
+        }
+
+        .theme-card::before {
+            position: absolute;
+            top: -90px;
+            right: -65px;
+            width: 220px;
+            height: 220px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.16);
+            content: "";
+        }
+
+        .theme-card-copy {
+            position: relative;
+            z-index: 2;
+        }
+
+        .theme-card h3 {
+            font-size: 22px;
+            letter-spacing: -0.03em;
+        }
+
+        .theme-card p {
+            max-width: 280px;
+            margin-top: 8px;
+            font-size: 14px;
+            line-height: 1.55;
+        }
+
+        .theme-card .phone {
+            position: relative;
+            z-index: 1;
+            width: min(100%, 220px);
+            margin: 30px auto -98px;
+            border-width: 7px;
+            border-radius: 39px;
+            box-shadow: 0 28px 58px rgba(15, 17, 30, 0.26);
+            transform: none;
+        }
+
+        .theme-card .phone img {
+            border-radius: 31px;
+        }
+
+        .theme-violet {
+            color: #f2edff;
+            background: linear-gradient(155deg, #2b2542, #181627);
+        }
+
+        .theme-violet p {
+            color: #bdb1df;
+        }
+
+        .theme-midnight {
+            color: #f2f6ff;
+            background: linear-gradient(155deg, #17345f, #091426);
+        }
+
+        .theme-midnight p {
+            color: #aebbd0;
+        }
+
+        .theme-mint {
+            color: #224e45;
+            background: linear-gradient(155deg, #e9fbf7, #cfece5);
+        }
+
+        .theme-mint p {
+            color: #5e837b;
+        }
+
+        .data-section {
+            background: var(--paper-warm);
+        }
+
+        .data-grid {
+            display: grid;
+            grid-template-columns: minmax(0, 0.9fr) minmax(500px, 1.1fr);
+            align-items: center;
+            gap: clamp(50px, 8vw, 110px);
+        }
+
+        .data-points {
+            display: grid;
+            gap: 19px;
+            margin-top: 35px;
+            list-style: none;
+        }
+
+        .data-points li {
+            display: flex;
+            align-items: center;
+            gap: 13px;
+            color: var(--ink-soft);
+            font-size: 15px;
+            font-weight: 650;
+        }
+
+        .data-points svg {
+            width: 21px;
+            height: 21px;
+            padding: 4px;
+            border-radius: 50%;
+            color: #ffffff;
+            background: var(--green);
+        }
+
+        .data-devices {
+            position: relative;
+            min-height: 640px;
+        }
+
+        .data-devices::before {
+            position: absolute;
+            top: 12%;
+            left: 14%;
+            width: 72%;
+            height: 72%;
+            border-radius: 50%;
+            background: linear-gradient(145deg, rgba(237, 69, 105, 0.18), rgba(95, 116, 238, 0.17));
+            filter: blur(16px);
+            content: "";
+        }
+
+        .data-devices .phone:first-child {
+            z-index: 2;
+            top: 18px;
+            left: 18px;
+            width: 264px;
+            transform: rotate(-4deg);
+        }
+
+        .data-devices .phone:last-child {
+            z-index: 1;
+            right: 18px;
+            bottom: 0;
+            width: 264px;
+            transform: rotate(5deg);
+        }
+
+        .privacy-card {
+            position: relative;
+            overflow: hidden;
+            padding: clamp(44px, 7vw, 86px);
+            border-radius: var(--radius-lg);
+            color: #ffffff;
+            background: var(--navy);
+        }
+
+        .privacy-card::before {
+            position: absolute;
+            top: -170px;
+            right: -110px;
+            width: 440px;
+            height: 440px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            box-shadow:
+                0 0 0 60px rgba(255, 255, 255, 0.025),
+                0 0 0 120px rgba(255, 255, 255, 0.018);
+            content: "";
+        }
+
+        .privacy-top {
+            position: relative;
+            display: grid;
+            grid-template-columns: 1.1fr 0.9fr;
+            align-items: end;
+            gap: 48px;
+        }
+
+        .privacy-card .section-kicker {
+            color: #ff9eae;
+        }
+
+        .privacy-card .section-title {
+            max-width: 620px;
+        }
+
+        .privacy-top > p {
+            color: rgba(255, 255, 255, 0.65);
+            font-size: 17px;
+        }
+
+        .privacy-grid {
+            position: relative;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1px;
+            margin-top: 60px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 22px;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .privacy-item {
+            min-height: 185px;
+            padding: 25px;
+            background: var(--navy-soft);
+        }
+
+        .privacy-item svg {
+            width: 26px;
+            height: 26px;
+            margin-bottom: 29px;
+            color: #ff9eae;
+        }
+
+        .privacy-item strong {
+            display: block;
+            font-size: 15px;
+        }
+
+        .privacy-item span {
+            display: block;
+            margin-top: 7px;
+            color: rgba(255, 255, 255, 0.54);
+            font-size: 13px;
+            line-height: 1.55;
+        }
+
+        .privacy-link {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 32px;
+            color: #ffffff;
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .privacy-link span {
+            transition: transform 180ms ease;
+        }
+
+        .privacy-link:hover span {
+            transform: translateX(4px);
+        }
+
+        .disclaimer {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 18px;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 26px 28px;
+            border: 1px solid var(--line);
+            border-radius: 22px;
+            color: var(--muted);
+            background: rgba(255, 255, 255, 0.62);
+            font-size: 14px;
+        }
+
+        .disclaimer svg {
+            width: 24px;
+            height: 24px;
+            color: var(--accent);
+        }
+
+        .disclaimer strong {
+            display: block;
+            margin-bottom: 3px;
+            color: var(--ink);
+        }
+
+        .closing {
+            padding: 75px 0 120px;
+            text-align: center;
+        }
+
+        .closing-icon {
+            width: 78px;
+            height: 78px;
+            margin: 0 auto 28px;
+            border-radius: 22px;
+            box-shadow: 0 18px 38px rgba(202, 45, 83, 0.2);
+        }
+
+        .closing h2 {
+            font-size: clamp(42px, 5vw, 68px);
+            letter-spacing: -0.055em;
+            line-height: 1;
+        }
+
+        .closing p {
+            max-width: 560px;
+            margin: 22px auto 0;
+            color: var(--muted);
+            font-size: 18px;
+        }
+
+        .release-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 9px;
+            margin-top: 30px;
+            padding: 13px 18px;
+            border: 1px solid var(--line);
+            border-radius: 999px;
+            background: #ffffff;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .release-status::before {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--coral);
+            box-shadow: 0 0 0 6px rgba(255, 128, 110, 0.13);
+            content: "";
+        }
+
+        .closing-links {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 26px;
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .closing-links a {
+            padding-bottom: 2px;
+            border-bottom: 1px solid currentColor;
+        }
+
+        footer {
+            padding: 30px 0 40px;
+            border-top: 1px solid var(--line);
+        }
+
+        .footer-wrap {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 30px;
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        .footer-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 24px;
+        }
+
+        .footer-links a:hover {
+            color: var(--ink);
+        }
+
+        .js [data-reveal] {
+            opacity: 0;
+            transform: translateY(24px);
+            transition: opacity 650ms ease, transform 650ms ease;
+        }
+
+        .js [data-reveal].is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        @media (max-width: 1050px) {
+            .hero {
+                padding-top: 132px;
+            }
+
+            .hero-grid {
+                grid-template-columns: minmax(0, 1fr) 390px;
+                gap: 45px;
+            }
+
+            .device-stage {
+                min-height: 580px;
+            }
+
+            .phone-front {
+                width: 248px;
+            }
+
+            .phone-back {
+                width: 216px;
+            }
+
+            .floating-note.note-bottom {
+                right: -5px;
+            }
+
+            .signal-grid {
+                gap: 55px;
+            }
+
+            .feature-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .privacy-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .theme-card {
+                min-height: 580px;
+                padding-inline: 22px;
+            }
+        }
+
+        @media (max-width: 800px) {
+            :root {
+                --page: min(100% - 32px, 680px);
+            }
+
+            .site-header {
+                padding: 10px 0;
+            }
+
+            .menu-toggle {
+                display: block;
+            }
+
+            .nav-links {
+                position: absolute;
+                top: calc(100% + 2px);
+                right: 16px;
+                left: 16px;
+                display: grid;
+                gap: 3px;
+                padding: 12px;
+                border: 1px solid var(--line);
+                border-radius: 20px;
+                background: rgba(255, 250, 248, 0.97);
+                box-shadow: var(--shadow-soft);
+                -webkit-backdrop-filter: blur(18px);
+                backdrop-filter: blur(18px);
+                opacity: 0;
+                pointer-events: none;
+                transform: translateY(-10px);
+                transition: opacity 180ms ease, transform 180ms ease;
+            }
+
+            .nav-links.is-open {
+                opacity: 1;
+                pointer-events: auto;
+                transform: translateY(0);
+            }
+
+            .nav-links a {
+                display: block;
+                padding: 10px 12px;
+                border-radius: 12px;
+            }
+
+            .nav-links a:hover {
+                background: var(--surface);
+            }
+
+            .nav-links a::after {
+                display: none;
+            }
+
+            .nav-support {
+                margin-top: 3px;
+                background: var(--surface);
+            }
+
+            .hero {
+                min-height: auto;
+                padding: 128px 0 78px;
+                text-align: center;
+            }
+
+            .hero-grid,
+            .signal-grid,
+            .data-grid,
+            .privacy-top,
+            .theme-heading {
+                grid-template-columns: 1fr;
+            }
+
+            .hero-copy {
+                margin-inline: auto;
+            }
+
+            .hero-actions,
+            .hero-facts {
+                justify-content: center;
+            }
+
+            .device-stage {
+                width: min(100%, 470px);
+                min-height: 615px;
+                margin: 30px auto 0;
+            }
+
+            .floating-note.note-top {
+                left: 0;
+            }
+
+            .section {
+                padding: 84px 0;
+            }
+
+            .signal-grid {
+                gap: 45px;
+            }
+
+            .signal-visual {
+                min-height: 600px;
+            }
+
+            .signal-copy {
+                padding-bottom: 20px;
+            }
+
+            .feature-heading {
+                display: block;
+            }
+
+            .feature-heading .section-lead {
+                margin-top: 20px;
+            }
+
+            .theme-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .theme-card:last-child {
+                grid-column: 1 / -1;
+            }
+
+            .data-grid {
+                gap: 25px;
+            }
+
+            .data-devices {
+                width: min(100%, 560px);
+                margin-inline: auto;
+            }
+
+            .privacy-top {
+                align-items: start;
+            }
+        }
+
+        @media (max-width: 560px) {
+            body {
+                font-size: 16px;
+            }
+
+            .brand img {
+                width: 35px;
+                height: 35px;
+            }
+
+            h1 {
+                font-size: clamp(48px, 15vw, 66px);
+            }
+
+            .hero-copy {
+                font-size: 17px;
+            }
+
+            .hero-actions {
+                display: grid;
+            }
+
+            .button {
+                width: 100%;
+            }
+
+            .hero-facts {
+                display: grid;
+                justify-content: start;
+                width: max-content;
+                margin-inline: auto;
+                text-align: left;
+            }
+
+            .device-stage {
+                min-height: 510px;
+            }
+
+            .phone-front {
+                width: 218px;
+            }
+
+            .phone-back {
+                top: 6px;
+                width: 185px;
+            }
+
+            .floating-note {
+                padding: 10px 12px;
+                font-size: 11px;
+            }
+
+            .floating-note.note-top {
+                top: 72px;
+            }
+
+            .floating-note.note-bottom {
+                right: 0;
+                bottom: 48px;
+            }
+
+            .section-title {
+                font-size: 40px;
+            }
+
+            .signal-visual {
+                min-height: 530px;
+            }
+
+            .signal-ring {
+                width: 340px;
+                height: 340px;
+            }
+
+            .signal-visual .phone {
+                width: 235px;
+            }
+
+            .feature-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .feature-card {
+                min-height: 230px;
+            }
+
+            .theme-grid {
+                grid-template-columns: none;
+                grid-auto-columns: minmax(235px, 78vw);
+                grid-auto-flow: column;
+                gap: 14px;
+                margin-inline: -16px;
+                overflow-x: auto;
+                padding: 0 16px 18px;
+                scroll-snap-type: x mandatory;
+                overscroll-behavior-inline: contain;
+            }
+
+            .theme-card,
+            .theme-card:last-child {
+                grid-column: auto;
+                min-height: 560px;
+                scroll-snap-align: center;
+            }
+
+            .data-devices {
+                min-height: 510px;
+            }
+
+            .data-devices .phone:first-child,
+            .data-devices .phone:last-child {
+                width: 205px;
+            }
+
+            .data-devices .phone:first-child {
+                left: 0;
+            }
+
+            .data-devices .phone:last-child {
+                right: 0;
+            }
+
+            .privacy-card {
+                padding: 39px 24px;
+                border-radius: 28px;
+            }
+
+            .privacy-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .privacy-item {
+                min-height: 160px;
+            }
+
+            .disclaimer {
+                grid-template-columns: 1fr;
+            }
+
+            .closing-links,
+            .footer-wrap {
+                flex-direction: column;
+            }
+
+            .footer-wrap {
+                align-items: flex-start;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            html {
+                scroll-behavior: auto;
+            }
+
+            *,
+            *::before,
+            *::after {
+                scroll-behavior: auto !important;
+                transition-duration: 0.01ms !important;
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+            }
+
+            .js [data-reveal] {
+                opacity: 1;
+                transform: none;
+            }
+        }
+    </style>
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "MonoPump",
+        "applicationCategory": "HealthApplication",
+        "operatingSystem": "iOS 17.6 or later",
+        "softwareVersion": "1.0.6",
+        "description": "A camera-based pulse tracker with contextual trends and local data storage."
+    }
+    </script>
+</head>
+<body>
+    <a class="skip-link" href="#main">Skip to content</a>
+
+    <header class="site-header" id="site-header">
+        <nav class="page nav-wrap" aria-label="Primary navigation">
+            <a class="brand" href="#top" aria-label="MonoPump home">
+                <img src="assets/images/app-icon.png" alt="" width="180" height="180">
+                <span>MonoPump</span>
+            </a>
+            <button class="menu-toggle" type="button" aria-label="Open navigation" aria-expanded="false" aria-controls="nav-links">
+                <span></span>
+            </button>
+            <ul class="nav-links" id="nav-links">
+                <li><a href="#how-it-works">How it works</a></li>
+                <li><a href="#features">Features</a></li>
+                <li><a href="#themes">Themes</a></li>
+                <li><a href="#privacy">Privacy</a></li>
+                <li><a class="nav-support" href="support.html">Support</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main id="main">
+        <section class="hero" id="top">
+            <div class="page hero-grid">
+                <div data-reveal>
+                    <p class="eyebrow">Pulse awareness, in context</p>
+                    <h1>Notice your pulse. <em>Know the moment.</em></h1>
+                    <p class="hero-copy">
+                        MonoPump turns your iPhone camera into a guided pulse estimator, then keeps each reading meaningful with context, trends, and history that stay on your device.
+                    </p>
+                    <div class="hero-actions">
+                        <a class="button button-primary" href="#how-it-works">
+                            See how it works
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                <path d="M5 12h14M13 6l6 6-6 6"/>
+                            </svg>
+                        </a>
+                        <a class="button button-secondary" href="support.html">Read the guide</a>
+                    </div>
+                    <div class="hero-facts" aria-label="Product facts">
+                        <span>iOS 17.6+</span>
+                        <span>No account required</span>
+                        <span>Four languages</span>
+                    </div>
+                </div>
+
+                <div class="device-stage" aria-label="MonoPump app screens" data-reveal>
+                    <div class="stage-glow" aria-hidden="true"></div>
+                    <div class="phone phone-back">
+                        <img src="assets/images/trends.jpg" alt="MonoPump trends screen comparing saved readings by context" width="645" height="1398" decoding="async">
+                    </div>
+                    <div class="phone phone-front">
+                        <img src="assets/images/home.jpg" alt="MonoPump home screen showing the latest saved pulse reading and context" width="645" height="1398" fetchpriority="high">
+                    </div>
+                    <div class="floating-note note-top">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                            <path d="M3 12h4l2-6 4 12 2-6h6"/>
+                        </svg>
+                        Latest reading in context
+                    </div>
+                    <div class="floating-note note-bottom">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                            <rect x="4" y="3" width="16" height="18" rx="3"/>
+                            <path d="M8 8h8M8 12h8M8 16h5"/>
+                        </svg>
+                        Trends stay local
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section signal-band" id="how-it-works">
+            <div class="page signal-grid">
+                <div class="signal-visual" data-reveal>
+                    <div class="signal-ring" aria-hidden="true"></div>
+                    <div class="phone">
+                        <img src="assets/images/result.jpg" alt="MonoPump result screen with pulse estimate, confidence, duration, and reading context" width="645" height="1398" loading="lazy" decoding="async">
+                    </div>
+                </div>
+                <div class="signal-copy" data-reveal>
+                    <p class="section-kicker">The core idea</p>
+                    <h2 class="section-title">A short guided session. A reading with context.</h2>
+                    <p class="section-lead">
+                        Cover the rear camera and flash with your fingertip. MonoPump observes subtle color changes caused by blood flow and estimates your pulse when the signal is stable.
+                    </p>
+                    <ol class="instruction-list">
+                        <li>
+                            <span class="step-number">01</span>
+                            <div>
+                                <strong>Cover and hold still</strong>
+                                <p>The in-app guide helps with lighting, camera coverage, and movement.</p>
+                            </div>
+                        </li>
+                        <li>
+                            <span class="step-number">02</span>
+                            <div>
+                                <strong>Review the estimate</strong>
+                                <p>See the pulse estimate, signal confidence, and session duration.</p>
+                            </div>
+                        </li>
+                        <li>
+                            <span class="step-number">03</span>
+                            <div>
+                                <strong>Add context and save</strong>
+                                <p>Label the moment, then keep the reading and quality metadata in local history.</p>
+                            </div>
+                        </li>
+                    </ol>
+                </div>
+            </div>
+        </section>
+
+        <section class="section" id="features">
+            <div class="page">
+                <div class="feature-heading" data-reveal>
+                    <div>
+                        <p class="section-kicker">Built around the reading</p>
+                        <h2 class="section-title">Useful detail, without the noise.</h2>
+                    </div>
+                    <p class="section-lead">
+                        MonoPump focuses on repeatable personal observations instead of scores, diagnoses, or unsupported predictions.
+                    </p>
+                </div>
+
+                <div class="feature-grid">
+                    <article class="feature-card" data-reveal>
+                        <span class="feature-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                <path d="M3 12h4l2-6 4 12 2-6h6"/>
+                            </svg>
+                        </span>
+                        <h3>Guided camera estimate</h3>
+                        <p>Clear preparation, finger placement, and signal feedback help you complete a stable session.</p>
+                    </article>
+                    <article class="feature-card" data-reveal>
+                        <span class="feature-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                <path d="M4 19V9M10 19V5M16 19v-7M22 19V3"/>
+                            </svg>
+                        </span>
+                        <h3>Descriptive trends</h3>
+                        <p>Compare averages and changes over time without turning observations into medical conclusions.</p>
+                    </article>
+                    <article class="feature-card" data-reveal>
+                        <span class="feature-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                <path d="M4 6h16M7 12h10M10 18h4"/>
+                            </svg>
+                        </span>
+                        <h3>Context that matters</h3>
+                        <p>Separate resting readings from after-exercise and other situations for like-for-like review.</p>
+                    </article>
+                    <article class="feature-card" data-reveal>
+                        <span class="feature-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+                                <circle cx="9" cy="7" r="4"/>
+                                <path d="M19 8v6M16 11h6"/>
+                            </svg>
+                        </span>
+                        <h3>Separate profiles</h3>
+                        <p>Keep individual histories for family members without creating cloud accounts.</p>
+                    </article>
+                    <article class="feature-card" data-reveal>
+                        <span class="feature-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                <path d="M12 3v12M7 10l5 5 5-5"/>
+                                <path d="M5 21h14"/>
+                            </svg>
+                        </span>
+                        <h3>Flexible export</h3>
+                        <p>Create PDF, CSV, JSON, Excel, or Data Report files locally and choose where they go.</p>
+                    </article>
+                    <article class="feature-card" data-reveal>
+                        <span class="feature-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                <path d="M12 2a10 10 0 1 0 10 10"/>
+                                <path d="M12 6v6l4 2"/>
+                            </svg>
+                        </span>
+                        <h3>Appearance that fits</h3>
+                        <p>Warm, violet, midnight, and mint themes pair with Reduce Motion support.</p>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <section class="section theme-section" id="themes">
+            <div class="page">
+                <div class="theme-heading" data-reveal>
+                    <div>
+                        <p class="section-kicker">Make it yours</p>
+                        <h2 class="section-title">The same clear layout, in your color.</h2>
+                    </div>
+                    <p class="section-lead">
+                        Choose an appearance that suits the room, the time of day, or simply your preference.
+                    </p>
+                </div>
+
+                <div class="theme-grid" aria-label="MonoPump appearance themes">
+                    <article class="theme-card theme-violet" data-reveal>
+                        <div class="theme-card-copy">
+                            <h3>Violet</h3>
+                            <p>Soft purple accents on a low-light background.</p>
+                        </div>
+                        <div class="phone">
+                            <img src="assets/images/theme-violet.jpg" alt="MonoPump home screen in the violet theme" width="645" height="1398" loading="lazy" decoding="async">
+                        </div>
+                    </article>
+                    <article class="theme-card theme-midnight" data-reveal>
+                        <div class="theme-card-copy">
+                            <h3>Midnight</h3>
+                            <p>Deep navy surfaces with crisp coral highlights.</p>
+                        </div>
+                        <div class="phone">
+                            <img src="assets/images/theme-midnight.jpg" alt="MonoPump home screen in the midnight theme" width="645" height="1398" loading="lazy" decoding="async">
+                        </div>
+                    </article>
+                    <article class="theme-card theme-mint" data-reveal>
+                        <div class="theme-card-copy">
+                            <h3>Mint</h3>
+                            <p>A bright, cool palette with gentle contrast.</p>
+                        </div>
+                        <div class="phone">
+                            <img src="assets/images/theme-mint.jpg" alt="MonoPump home screen in the mint theme" width="645" height="1398" loading="lazy" decoding="async">
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <section class="section data-section">
+            <div class="page data-grid">
+                <div data-reveal>
+                    <p class="section-kicker">Your records, your format</p>
+                    <h2 class="section-title">Review the record. Keep a copy.</h2>
+                    <p class="section-lead">
+                        Filter saved readings by profile and context, then create a file directly on your iPhone when you need a personal copy.
+                    </p>
+                    <ul class="data-points">
+                        <li>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true"><path d="m6 12 4 4 8-8"/></svg>
+                            History filters for profile and context
+                        </li>
+                        <li>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true"><path d="m6 12 4 4 8-8"/></svg>
+                            PDF, CSV, JSON, Excel, and Data Report
+                        </li>
+                        <li>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true"><path d="m6 12 4 4 8-8"/></svg>
+                            Files are generated locally before you share
+                        </li>
+                    </ul>
+                </div>
+                <div class="data-devices" aria-label="MonoPump history and export screens" data-reveal>
+                    <div class="phone">
+                        <img src="assets/images/history.jpg" alt="MonoPump history screen filtered by reading context" width="645" height="1398" loading="lazy" decoding="async">
+                    </div>
+                    <div class="phone">
+                        <img src="assets/images/export.jpg" alt="MonoPump data export screen with format, date range, and content options" width="645" height="1398" loading="lazy" decoding="async">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section" id="privacy">
+            <div class="page">
+                <div class="privacy-card" data-reveal>
+                    <div class="privacy-top">
+                        <div>
+                            <p class="section-kicker">Private by design</p>
+                            <h2 class="section-title">Your measurements stay with you.</h2>
+                        </div>
+                        <p>
+                            MonoPump does not require an account or operate cloud storage for your pulse history. Your device remains the source of truth.
+                        </p>
+                    </div>
+
+                    <div class="privacy-grid">
+                        <div class="privacy-item">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                <rect x="5" y="2" width="14" height="20" rx="3"/>
+                                <path d="M10 18h4"/>
+                            </svg>
+                            <strong>Local history</strong>
+                            <span>Measurements and profile data are stored on your device.</span>
+                        </div>
+                        <div class="privacy-item">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                <path d="M3 3l18 18M10.6 10.6A2 2 0 0 0 13.4 13.4M9.9 4.2A10.6 10.6 0 0 1 12 4c5 0 9 5 9 8a9.6 9.6 0 0 1-2 3.3M6.2 6.2C4.2 7.7 3 10.1 3 12c0 3 4 8 9 8a9.4 9.4 0 0 0 3.2-.6"/>
+                            </svg>
+                            <strong>No camera files</strong>
+                            <span>Camera frames are processed for the estimate, not saved as photos or video.</span>
+                        </div>
+                        <div class="privacy-item">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                <circle cx="12" cy="8" r="4"/>
+                                <path d="M4 21a8 8 0 0 1 16 0M4 4l16 16"/>
+                            </svg>
+                            <strong>No account</strong>
+                            <span>Start using the app without registration or a cloud identity.</span>
+                        </div>
+                        <div class="privacy-item">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                <path d="M12 3v12M7 10l5 5 5-5M5 21h14"/>
+                            </svg>
+                            <strong>Explicit export</strong>
+                            <span>Your records leave the app only when you choose to export and share them.</span>
+                        </div>
+                    </div>
+
+                    <a class="privacy-link" href="privacy.html">
+                        Read the full privacy policy <span aria-hidden="true">→</span>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <aside class="page disclaimer" aria-label="Product disclaimer" data-reveal>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <circle cx="12" cy="12" r="9"/>
+                <path d="M12 10v6M12 7h.01"/>
+            </svg>
+            <p>
+                <strong>For personal awareness.</strong>
+                MonoPump provides camera-based pulse estimates and saved-reading comparisons for personal tracking only, not diagnosis.
+            </p>
+        </aside>
+
+        <section class="closing">
+            <div class="page" data-reveal>
+                <img class="closing-icon" src="assets/images/app-icon.png" alt="" width="180" height="180" loading="lazy">
+                <h2>One reading. Better context.</h2>
+                <p>MonoPump 1.0.6 is being prepared for App Store release.</p>
+                <span class="release-status">App Store release in progress</span>
+                <div class="closing-links">
+                    <a href="support.html">Get support</a>
+                    <a href="mailto:support@monopump.app">Contact the team</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="page footer-wrap">
+            <p>© 2026 MonoPump. All rights reserved.</p>
+            <div class="footer-links">
+                <a href="#how-it-works">How it works</a>
+                <a href="privacy.html">Privacy</a>
+                <a href="support.html">Support</a>
+                <a href="mailto:support@monopump.app">Email</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        (() => {
+            const header = document.querySelector("#site-header");
+            const menuButton = document.querySelector(".menu-toggle");
+            const navLinks = document.querySelector("#nav-links");
+
+            const updateHeader = () => {
+                header.classList.toggle("is-scrolled", window.scrollY > 12);
+            };
+
+            const closeMenu = () => {
+                menuButton.setAttribute("aria-expanded", "false");
+                menuButton.setAttribute("aria-label", "Open navigation");
+                navLinks.classList.remove("is-open");
+            };
+
+            menuButton.addEventListener("click", () => {
+                const isOpen = menuButton.getAttribute("aria-expanded") === "true";
+                menuButton.setAttribute("aria-expanded", String(!isOpen));
+                menuButton.setAttribute("aria-label", isOpen ? "Open navigation" : "Close navigation");
+                navLinks.classList.toggle("is-open", !isOpen);
+            });
+
+            navLinks.querySelectorAll("a").forEach((link) => {
+                link.addEventListener("click", closeMenu);
+            });
+
+            window.addEventListener("scroll", updateHeader, { passive: true });
+            window.addEventListener("resize", () => {
+                if (window.innerWidth > 800) closeMenu();
+            });
+            updateHeader();
+
+            const revealItems = document.querySelectorAll("[data-reveal]");
+            if (!("IntersectionObserver" in window)) {
+                revealItems.forEach((item) => item.classList.add("is-visible"));
+                return;
+            }
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add("is-visible");
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, {
+                threshold: 0.12,
+                rootMargin: "0px 0px -40px"
+            });
+
+            revealItems.forEach((item) => observer.observe(item));
+        })();
+    </script>
+</body>
+</html>
