@@ -7,10 +7,32 @@ This is not a Next.js project. It is a pure HTML/CSS/JavaScript site with no Nod
 ## Structure
 
 - `index.html` - marketing landing page
+- `launch.html` - App Store launch article and shareable canonical page
 - `privacy.html` - privacy policy
 - `support.html` - support and FAQ page
+- `assets/app-store-link.js` - locale-aware App Store storefront links
+- `assets/i18n.js` - language detection, switching, persistence, and RTL behavior
+- `assets/translations.js` - generated static translations for all public pages
+- `assets/i18n.css` - shared language selector and RTL styles
 - `assets/images/` - optimized website images used by the pages
 - `ASSET_REPORT.md` - image size and dimension report
+
+## Localization
+
+The website supports English, Simplified Chinese, Traditional Chinese, Japanese,
+Korean, French, German, Spanish, Portuguese, and Arabic. English remains the
+static HTML fallback. The selected language is stored locally in the browser and
+is also added to internal links as a `lang` query parameter.
+
+After changing English source copy, regenerate the static translation resource:
+
+```sh
+ruby scripts/generate-translations.rb
+```
+
+The generator requires Ruby, Nokogiri, and network access to the translation
+endpoint. Review privacy, medical-boundary, and product-capability statements
+before publishing regenerated copy.
 
 ## Local Preview
 

@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="MonoPump is now on the App Store: guided camera pulse estimates, contextual local history, descriptive trends, and private export for iPhone.">
+    <meta name="theme-color" content="#fffaf8">
+    <meta property="og:title" content="MonoPump is now on the App Store">
+    <meta property="og:description" content="Why we built a camera pulse tracker around context, local history, and clear limits.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://pump.monoware.app/launch.html">
+    <meta property="og:image" content="https://pump.monoware.app/assets/images/home.jpg">
+    <link rel="canonical" href="https://pump.monoware.app/launch.html">
+    <link rel="icon" href="assets/images/app-icon.png" type="image/png">
+    <link rel="apple-touch-icon" href="assets/images/app-icon.png">
+    <link rel="stylesheet" href="assets/i18n.css">
+    <title>MonoPump is now on the App Store</title>
+    <script src="assets/translations.js" defer></script>
+    <script src="assets/app-store-link.js" defer></script>
+    <script src="assets/i18n.js" defer></script>
+    <style>
+        :root {
+            --paper: #fffaf8;
+            --surface: #ffffff;
+            --surface-soft: #f8f6f5;
+            --ink: #171820;
+            --muted: #696874;
+            --line: rgba(23, 24, 32, 0.1);
+            --accent: #ed4569;
+            --accent-deep: #c92d53;
+            --accent-soft: #ffdbe2;
+            --blue: #5f74ee;
+            --navy: #111728;
+            --green: #2c8b65;
+            --page: min(1080px, calc(100% - 40px));
+            --copy: min(720px, calc(100% - 40px));
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            min-width: 320px;
+            color: var(--ink);
+            background:
+                radial-gradient(circle at 12% 0%, rgba(255, 179, 165, 0.3), transparent 30rem),
+                radial-gradient(circle at 92% 20%, rgba(95, 116, 238, 0.12), transparent 32rem),
+                var(--paper);
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", sans-serif;
+            font-size: 18px;
+            line-height: 1.72;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        img {
+            display: block;
+            max-width: 100%;
+        }
+
+        :focus-visible {
+            outline: 3px solid rgba(95, 116, 238, 0.55);
+            outline-offset: 4px;
+        }
+
+        .page {
+            width: var(--page);
+            margin-inline: auto;
+        }
+
+        .site-header {
+            padding: 18px 0;
+            border-bottom: 1px solid var(--line);
+            background: rgba(255, 250, 248, 0.86);
+            backdrop-filter: blur(18px);
+        }
+
+        .nav {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .brand {
+            display: inline-flex;
+            align-items: center;
+            gap: 11px;
+            font-weight: 760;
+            letter-spacing: -0.02em;
+        }
+
+        .brand img {
+            width: 40px;
+            height: 40px;
+            border-radius: 11px;
+            box-shadow: 0 7px 18px rgba(205, 47, 84, 0.18);
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            color: var(--muted);
+            font-size: 14px;
+            font-weight: 650;
+        }
+
+        .nav-download {
+            padding: 10px 16px;
+            border-radius: 999px;
+            color: #ffffff;
+            background: var(--navy);
+        }
+
+        .hero {
+            padding: 92px 0 60px;
+            text-align: center;
+        }
+
+        .eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 24px;
+            padding: 8px 13px;
+            border: 1px solid rgba(44, 139, 101, 0.22);
+            border-radius: 999px;
+            color: var(--green);
+            background: rgba(255, 255, 255, 0.7);
+            font-size: 13px;
+            font-weight: 750;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+
+        .eyebrow::before {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #45b98a;
+            content: "";
+        }
+
+        h1 {
+            max-width: 860px;
+            margin: 0 auto;
+            font-size: clamp(46px, 7vw, 82px);
+            line-height: 0.98;
+            letter-spacing: -0.058em;
+        }
+
+        .lede {
+            max-width: 720px;
+            margin: 30px auto 0;
+            color: var(--muted);
+            font-size: clamp(20px, 2.4vw, 25px);
+            line-height: 1.48;
+        }
+
+        .meta {
+            margin-top: 24px;
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        .hero-actions {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 34px;
+        }
+
+        .button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 52px;
+            padding: 0 24px;
+            border: 1px solid var(--line);
+            border-radius: 999px;
+            font-size: 15px;
+            font-weight: 720;
+        }
+
+        .button-primary {
+            border-color: var(--navy);
+            color: #ffffff;
+            background: var(--navy);
+            box-shadow: 0 12px 28px rgba(17, 23, 40, 0.18);
+        }
+
+        .button-secondary {
+            background: rgba(255, 255, 255, 0.78);
+        }
+
+        .screens {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 24px;
+            width: min(900px, calc(100% - 40px));
+            margin: 24px auto 88px;
+            padding: 34px;
+            border: 1px solid var(--line);
+            border-radius: 38px;
+            background: rgba(255, 255, 255, 0.64);
+            box-shadow: 0 28px 80px rgba(53, 33, 38, 0.11);
+        }
+
+        .phone {
+            overflow: hidden;
+            border: 7px solid #171820;
+            border-radius: 35px;
+            background: #171820;
+            box-shadow: 0 24px 54px rgba(17, 23, 40, 0.2);
+        }
+
+        .phone:nth-child(2) {
+            transform: translateY(-18px);
+        }
+
+        article {
+            width: var(--copy);
+            margin-inline: auto;
+            padding-bottom: 100px;
+        }
+
+        article h2 {
+            margin: 68px 0 18px;
+            font-size: clamp(30px, 4vw, 44px);
+            line-height: 1.12;
+            letter-spacing: -0.035em;
+        }
+
+        article h3 {
+            margin: 34px 0 10px;
+            font-size: 22px;
+            line-height: 1.3;
+        }
+
+        article p {
+            margin-top: 20px;
+            color: #42434d;
+        }
+
+        article ul,
+        article ol {
+            margin: 22px 0 0 24px;
+            color: #42434d;
+        }
+
+        article li {
+            margin: 10px 0;
+            padding-left: 6px;
+        }
+
+        article strong {
+            color: var(--ink);
+        }
+
+        .callout {
+            margin: 42px 0;
+            padding: 28px 30px;
+            border: 1px solid rgba(237, 69, 105, 0.22);
+            border-radius: 24px;
+            background: linear-gradient(145deg, #ffffff, #fff2f4);
+        }
+
+        .callout p:first-child {
+            margin-top: 0;
+            color: var(--accent-deep);
+            font-size: 14px;
+            font-weight: 780;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+        }
+
+        .boundary {
+            margin-top: 44px;
+            padding: 34px;
+            border-radius: 26px;
+            color: #ffffff;
+            background: var(--navy);
+        }
+
+        .boundary h2 {
+            margin-top: 0;
+        }
+
+        .boundary p,
+        .boundary ul {
+            color: rgba(255, 255, 255, 0.76);
+        }
+
+        .final-cta {
+            margin-top: 72px;
+            padding: 46px 34px;
+            border: 1px solid var(--line);
+            border-radius: 30px;
+            text-align: center;
+            background: var(--surface);
+            box-shadow: 0 22px 60px rgba(53, 33, 38, 0.08);
+        }
+
+        .final-cta img {
+            width: 76px;
+            height: 76px;
+            margin: 0 auto 20px;
+            border-radius: 19px;
+        }
+
+        .final-cta h2 {
+            margin: 0;
+        }
+
+        .final-cta p {
+            max-width: 520px;
+            margin: 14px auto 26px;
+        }
+
+        footer {
+            border-top: 1px solid var(--line);
+        }
+
+        .footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            padding: 28px 0 36px;
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        @media (max-width: 720px) {
+            .nav-actions > a:first-child {
+                display: none;
+            }
+
+            .hero {
+                padding-top: 70px;
+            }
+
+            .hero-actions,
+            .footer {
+                flex-direction: column;
+            }
+
+            .screens {
+                grid-template-columns: 1fr 1fr;
+                gap: 14px;
+                padding: 20px;
+            }
+
+            .phone:nth-child(2) {
+                transform: none;
+            }
+
+            .phone:last-child {
+                display: none;
+            }
+
+            article {
+                width: min(100% - 32px, 720px);
+            }
+
+            .footer {
+                align-items: flex-start;
+            }
+        }
+    </style>
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Article",
+        "headline": "MonoPump is now on the App Store",
+        "description": "Why we built a camera pulse tracker around context, local history, and clear limits.",
+        "datePublished": "2026-07-31",
+        "dateModified": "2026-07-31",
+        "author": {
+            "@type": "Organization",
+            "name": "MonoWare"
+        },
+        "publisher": {
+            "@type": "Organization",
+            "name": "MonoWare"
+        },
+        "mainEntityOfPage": "https://pump.monoware.app/launch.html",
+        "image": "https://pump.monoware.app/assets/images/home.jpg"
+    }
+    </script>
+</head>
+<body>
+    <header class="site-header">
+        <nav class="page nav" aria-label="Primary navigation">
+            <a class="brand" href="index.html">
+                <img src="assets/images/app-icon.png" alt="" width="180" height="180">
+                <span>MonoPump</span>
+            </a>
+            <div class="nav-actions">
+                <a href="index.html">Product overview</a>
+                <a class="nav-download" href="https://apps.apple.com/cn/app/monopump/id6763913464" target="_blank" rel="noopener noreferrer" data-app-store-link>App Store</a>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div class="page">
+                <p class="eyebrow">Now available on the App Store</p>
+                <h1>One pulse estimate is a number. Context makes it a record.</h1>
+                <p class="lede">
+                    MonoPump uses the iPhone camera and flash for a short guided pulse estimate,
+                    then helps you save the moment, compare similar readings, and keep the history on your device.
+                </p>
+                <p class="meta">Product launch · July 31, 2026 · 6 minute read</p>
+                <div class="hero-actions">
+                    <a class="button button-primary" href="https://apps.apple.com/cn/app/monopump/id6763913464" target="_blank" rel="noopener noreferrer" data-app-store-link>Download MonoPump</a>
+                    <a class="button button-secondary" href="index.html">Explore the product</a>
+                </div>
+            </div>
+        </section>
+
+        <div class="screens" aria-label="MonoPump home, result, and trend screens">
+            <div class="phone">
+                <img src="assets/images/home.jpg" alt="MonoPump home screen with the latest saved pulse estimate" width="645" height="1398">
+            </div>
+            <div class="phone">
+                <img src="assets/images/result.jpg" alt="MonoPump result screen with estimate, signal confidence, and context" width="645" height="1398">
+            </div>
+            <div class="phone">
+                <img src="assets/images/trends.jpg" alt="MonoPump descriptive trends built from saved readings" width="645" height="1398">
+            </div>
+        </div>
+
+        <article>
+            <p>
+                We built MonoPump around a simple observation: a pulse reading is more useful when you can remember
+                <strong>when it was taken, what you were doing, and how the signal looked</strong>.
+                A number after exercise is not directly comparable with a number after several quiet minutes.
+                Saving that context is more honest than turning every reading into a score.
+            </p>
+
+            <h2>How the camera estimate works</h2>
+            <p>
+                Place your fingertip gently over the rear camera and flash. As blood moves through the fingertip,
+                the camera observes small color changes. MonoPump analyzes that changing signal and produces a pulse
+                estimate after the signal remains stable long enough.
+            </p>
+            <p>
+                The app guides camera coverage, lighting, movement, and signal quality during the session.
+                The result includes the estimate, session duration, and confidence information so a weak signal
+                is not presented as if it were a strong one.
+            </p>
+
+            <div class="callout">
+                <p>The design principle</p>
+                <p>
+                    MonoPump shows what the camera observed and keeps the interpretation restrained.
+                    It does not turn a camera estimate into a diagnosis, risk score, or unsupported prediction.
+                </p>
+            </div>
+
+            <h2>Save the moment, not just the BPM</h2>
+            <p>After a session, you can label the context before adding the reading to local history:</p>
+            <ul>
+                <li>Resting</li>
+                <li>After exercise</li>
+                <li>Feeling unwell</li>
+                <li>Other situations you want to compare later</li>
+            </ul>
+            <p>
+                History and trend screens can then compare like with like. MonoPump uses descriptive summaries such
+                as averages, ranges, and recent changes. These summaries organize saved observations; they do not make
+                medical conclusions.
+            </p>
+
+            <h2>Private by default</h2>
+            <p>
+                Pulse history and profile data stay on the device. MonoPump does not require an account and does not
+                operate cloud storage for measurements. Camera frames are processed for the estimate and are not saved
+                as photos or video.
+            </p>
+            <p>
+                When you want a personal copy, the app can generate PDF, CSV, JSON, Excel, or Data Report files locally.
+                Nothing is shared until you choose a destination through the iOS share sheet.
+            </p>
+
+            <h2>Built for more than one profile</h2>
+            <p>
+                Separate profiles let a household keep individual histories on one device without creating cloud
+                identities. Each profile keeps its own readings and context. The interface is available in English,
+                Simplified Chinese, Japanese, and Korean, with multiple visual themes and Reduce Motion support.
+            </p>
+
+            <section class="boundary" aria-labelledby="boundary-title">
+                <h2 id="boundary-title">What MonoPump does not claim</h2>
+                <p>MonoPump is a personal wellness log, not a medical device. It is not designed for:</p>
+                <ul>
+                    <li>Diagnosis, screening, treatment, or emergency decisions</li>
+                    <li>Clinical monitoring or replacing a validated medical instrument</li>
+                    <li>Apple Health synchronization in the current version</li>
+                    <li>Drawing conclusions from a single camera estimate</li>
+                </ul>
+                <p>
+                    Movement, finger temperature, camera coverage, lighting, and device conditions can affect a result.
+                    If you have symptoms or concerns about your heart health, use appropriate medical equipment and
+                    contact a qualified healthcare professional.
+                </p>
+            </section>
+
+            <h2>Why launch it as a paid app</h2>
+            <p>
+                MonoPump is a one-time paid download with no subscription. The product does not need an advertising
+                profile, cloud account, or recurring plan to function. That model matches the product: a focused tool
+                that lives with the data it helps you record.
+            </p>
+
+            <div class="final-cta">
+                <img src="assets/images/app-icon.png" alt="" width="180" height="180">
+                <h2>MonoPump 1.1.0 is available now.</h2>
+                <p>
+                    Use your iPhone camera for guided pulse estimates, add context, and keep a private local history.
+                </p>
+                <a class="button button-primary" href="https://apps.apple.com/cn/app/monopump/id6763913464" target="_blank" rel="noopener noreferrer" data-app-store-link>View on the App Store</a>
+            </div>
+        </article>
+    </main>
+
+    <footer>
+        <div class="page footer">
+            <p>© 2026 MonoPump. Built and maintained by MonoWare.</p>
+            <div class="footer-links">
+                <a href="index.html">Home</a>
+                <a href="privacy.html">Privacy</a>
+                <a href="support.html">Support</a>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
