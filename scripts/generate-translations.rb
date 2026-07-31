@@ -6,7 +6,7 @@ require "nokogiri"
 require "uri"
 
 ROOT = File.expand_path("..", __dir__)
-PAGES = %w[index.html support.html privacy.html launch.html].freeze
+PAGES = %w[index.html support.html privacy.html].freeze
 TARGETS = {
   "zh-Hans" => "zh-CN",
   "zh-Hant" => "zh-TW",

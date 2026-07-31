@@ -7,7 +7,6 @@ This is not a Next.js project. It is a pure HTML/CSS/JavaScript site with no Nod
 ## Structure
 
 - `index.html` - marketing landing page
-- `launch.html` - App Store launch article and shareable canonical page
 - `privacy.html` - privacy policy
 - `support.html` - support and FAQ page
 - `assets/app-store-link.js` - locale-aware App Store storefront links
